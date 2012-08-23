@@ -21,7 +21,7 @@ package com.iggroup.oss.restdoclet.doclet.type.builder;
 
 import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.elementValue;
 import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.isAnnotated;
-import static com.iggroup.oss.restdoclet.doclet.util.UrlUtils.parseMultiUri;
+import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.parseValueAnnotation;
 
 import java.util.ArrayList;
 
@@ -69,9 +69,10 @@ public class MethodBuilder {
     * 
     * @param method type to populate
     * @param methodDoc method doc
+    * @param baseUri controller base uri
     * @return populated type
     */
-   public Method build(Method method, final MethodDoc methodDoc) {
+   public Method build(Method method, final MethodDoc methodDoc, final String baseUri) {
 
       assert method != null;
       assert methodDoc != null;
@@ -84,7 +85,7 @@ public class MethodBuilder {
       initPathParams(method, methodDoc.parameters(), methodDoc.paramTags());
       initModelParams(method, methodDoc.parameters(), methodDoc.paramTags());
       initBodyParams(method, methodDoc.parameters(), methodDoc.paramTags());
-      initRestParams(method, methodDoc);
+      initRestParams(method, methodDoc, baseUri);
       initResponseParams(method, methodDoc);
 
       return method;
@@ -254,9 +255,12 @@ public class MethodBuilder {
    /**
     * Initialises the REST-parameters of this method.
     * 
+    * @param method method to initialise
     * @param methodDoc the method's Java documentation object.
+    * @param baseUri the controller base uri
     */
-   private void initRestParams(Method method, final MethodDoc methodDoc) {
+   private void initRestParams(Method method, final MethodDoc methodDoc,
+                               final String baseUri) {
 
       LOG.debug(method.getName());
       ArrayList<RestParameter> restParams = new ArrayList<RestParameter>();
@@ -282,7 +286,7 @@ public class MethodBuilder {
          String[] deprecatedURIs = DocTypeUtils.getDeprecatedURIs(methodDoc);
 
          for (final String uri : methodUris) {
-            LOG.debug("uri:" + uri);
+            LOG.debug("uri:" + baseUri + uri);
             boolean deprecated = false;
             if (deprecatedURIs != null) {
                for (final String deprecatedUri : deprecatedURIs) {
@@ -295,7 +299,7 @@ public class MethodBuilder {
                   }
                }
             }
-            method.getUris().add(new Uri(uri, deprecated));
+            method.getUris().add(new Uri(baseUri + uri, deprecated));
          }
 
          if (deprecatedURIs != null && !deprecatedMatch) {
@@ -305,18 +309,6 @@ public class MethodBuilder {
       }
 
       method.setRestParams(restParams);
-   }
-
-   /**
-    * Parse @RequestMapping value annotation
-    * 
-    * @param av value of form "xxx" or {"xx","yy",...}
-    * @return String array of URIs
-    */
-   private String[] parseValueAnnotation(final AnnotationValue av) {
-
-      return parseMultiUri(av.toString().trim());
-
    }
 
    private void initResponseParams(Method method, final MethodDoc methodDoc) {

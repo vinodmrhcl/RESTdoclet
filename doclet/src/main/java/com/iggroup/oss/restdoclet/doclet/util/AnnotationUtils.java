@@ -19,6 +19,8 @@
  */
 package com.iggroup.oss.restdoclet.doclet.util;
 
+import static com.iggroup.oss.restdoclet.doclet.util.UrlUtils.parseMultiUri;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.sun.javadoc.AnnotationDesc;
@@ -253,6 +255,18 @@ public final class AnnotationUtils {
          }
       }
       return value;
+   }
+
+   /**
+    * Parse @RequestMapping value annotation
+    * 
+    * @param av value of form "xxx" or {"xx","yy",...}
+    * @return String array of URIs
+    */
+   public static String[] parseValueAnnotation(final AnnotationValue av) {
+
+      return parseMultiUri(av.toString().trim());
+
    }
 
 }
