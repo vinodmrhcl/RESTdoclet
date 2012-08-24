@@ -58,8 +58,9 @@ public final class UrlUtils {
       value = StringUtils.removeStart(multiUri.trim(), "{");
       value = StringUtils.removeEnd(value, "}");
       value = value.replace("\"", "");
-      value = value.replace(" ", "");
+      value = value.replaceAll("\\s", "");
 
       return value.split(",");
    }
+
 }
