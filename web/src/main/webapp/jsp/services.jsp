@@ -52,9 +52,7 @@
             </c:if>
          </c:forEach>
 
-         <c:if test="${showRow == 'true'}">
-            <tr>
-
+            <tr  class="${showRow? 'active': 'deprecated'}">
                <td class="uri">
                   <c:forEach var="uri" items="${service.uris}">
 
@@ -79,9 +77,7 @@
                      </c:forEach>
                   </table>
                </td>
-
             </tr>
-         </c:if>
 
       </c:forEach>
 

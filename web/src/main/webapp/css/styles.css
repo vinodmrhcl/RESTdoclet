@@ -59,11 +59,11 @@ div.main {
 }
 
 .deprecated {
-   visibility: hidden;
+   display:none
 }
 
 .showDeprecated .deprecated {
-   visibility: visible;
+   display: table-row;
 }
 
 .deprecatedLabel {
