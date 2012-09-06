@@ -1,26 +1,18 @@
 /*
- * #%L
- * restdoc-sample
- * %%
- * Copyright (C) 2012 IG Group
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * #%L restdoc-sample %% Copyright (C) 2012 IG Group %% Licensed under the
+ * Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License
+ * at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 package com.iggroup.oss.sample.web.controller;
 
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -65,9 +57,9 @@ public class SampleController extends BaseController {
    @RequestMapping(value = "/samples/{reference}", method = {RequestMethod.GET})
    @ResponseBody
    public Sample getSampleByReference(/*
-                                      * @Valid @Pattern(regexp=
-                                      * "[0-9][0-9][0-9][0-9][0-9]")
-                                      */@PathVariable String reference) {
+    * @Valid @Pattern(regexp=
+    * "[0-9][0-9][0-9][0-9][0-9]")
+    */@PathVariable String reference) {
 
       LOGGER.info("getSampleByReference " + reference);
 
@@ -186,6 +178,20 @@ public class SampleController extends BaseController {
 
    /**
     * Test hashMap
+    * <ul>
+    * <li><code>X-IG-CLIENT_FLAVOUR</code> - for example <i>CFD</i>. Note this
+    * is provided in upper case whereas other references to the client
+    * application are in lower case.
+    * <li><code>X-IG-CLIENT_VERSION</code> - for example <i>1.24.41</i>
+    * <li><code>X-IG-DEVICE_OS_NAME</code> - for example <i>Blackberry_OS</i>
+    * <li><code>X-IG-DEVICE_OS_VERSION</code> - for example <i>4.6.0.92</i>
+    * <li><code>X-IG-DEVICE_MANUFACTURER</code> - for example <i>Research In
+    * Motion</i>
+    * <li><code>X-IG-DEVICE_MODEL</code> - for example <i>9000</i>
+    * <li><code>X-IG-DEVICE_LOCALE</code> - for example <i>en-GB</i>
+    * <li><code>X-IG-DEVICE_CARRIER</code> - for example <i>Default 3G
+    * Network</i>
+    * </ul>
     * 
     * @return test hashmap
     * @uriDeprecated {"/deprecated"}
@@ -206,6 +212,33 @@ public class SampleController extends BaseController {
 
       return sampleMap;
 
+   }
+
+   /**
+    * returns the market data detail information for a given position, used to
+    * display an edit ticket screen
+    * 
+    * @param request the http request
+    * @param dealId the dealId of the position to look up#
+    * @return the full detailed ticket information set for the given working
+    *         order
+    * @throws Exception in case of any server error
+    * @uriDeprecated {"/markets/details/positions/{dealId}",
+    *                "/marketdata/otc/{dealId:^[^\\.]+$}",
+    *                "/markets/details/position/{dealId}"}
+    * @deprecated use MarketDataV2Controller.openPositionData instead. URI :
+    *             /v2/markets/details/positions/{dealId}
+    */
+   @Deprecated
+   @RequestMapping(value = {"/markets/details/positions/{dealId}",
+      "/markets/details/position/{dealId}",
+   "/marketdata/otc/{dealId:^[^\\.]+$}"}, method = {RequestMethod.GET})
+   @ResponseBody
+   @SuppressWarnings("unchecked")
+   public Sample openPositionData(HttpServletRequest request,
+                                  @PathVariable String dealId)
+                                     throws Exception {
+      return null;
    }
 
 }
