@@ -189,7 +189,8 @@
 						<artifactId>restdoclet-plugin</artifactId>
 						<version>2.3.0-SNAPSHOT</version>
 						<configuration>
-							<contextRoot>/optionalContextRoot</contextRoot>
+                            <deployUrl>http://localhost:8080/restdoclet/upload</deployUrl>
+                            <deployDir>${RESTDOCLET_DEPLOY}/${project.artifactId}</deployDir>
 							<excludes>
 								<exclude>none</exclude>
 							</excludes>
@@ -225,35 +226,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>2.4</version>
-						<executions>
-							<execution>
-								<id>unpack war and configuration</id>
-								<phase>install</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>${project.groupId}</groupId>
-											<artifactId>${project.artifactId}</artifactId>
-											<version>${project.version}</version>
-											<type>jar</type>
-											<classifier>restdoclet</classifier>
-											<overWrite>true</overWrite>
-											<outputDirectory>${RESTDOCLET_DEPLOY}/${project.artifactId}
-											</outputDirectory>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
 				</plugins>
 			</build>
 		</profile>
