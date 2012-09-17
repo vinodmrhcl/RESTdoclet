@@ -169,7 +169,6 @@ public class MethodBuilder {
             }
          }
       }
-      LOG.debug(method.getJavadoc());
    }
 
    /**
