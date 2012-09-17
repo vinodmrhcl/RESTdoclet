@@ -1,21 +1,12 @@
 /*
- * #%L
- * restdoc-doclet
- * %%
- * Copyright (C) 2012 IG Group
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * #%L restdoc-doclet %% Copyright (C) 2012 IG Group %% Licensed under the
+ * Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License
+ * at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 package com.iggroup.oss.restdoclet.doclet.type.builder;
 
@@ -45,6 +36,7 @@ import com.iggroup.oss.restdoclet.doclet.type.ResponseParameter;
 import com.iggroup.oss.restdoclet.doclet.type.RestParameter;
 import com.iggroup.oss.restdoclet.doclet.type.Uri;
 import com.iggroup.oss.restdoclet.doclet.util.DocTypeUtils;
+import com.iggroup.oss.restdoclet.doclet.util.DocletUtils;
 import com.iggroup.oss.restdoclet.doclet.util.NameValuePair;
 import com.iggroup.oss.restdoclet.doclet.util.ParameterNamePredicate;
 import com.iggroup.oss.restdoclet.doclet.util.RequestMappingParamsParser;
@@ -72,7 +64,8 @@ public class MethodBuilder {
     * @param baseUri controller base uri
     * @return populated type
     */
-   public Method build(Method method, final MethodDoc methodDoc, final String baseUri) {
+   public Method build(Method method, final MethodDoc methodDoc,
+                       final String baseUri) {
 
       assert method != null;
       assert methodDoc != null;
@@ -143,7 +136,8 @@ public class MethodBuilder {
 
       LOG.debug(method.getName());
 
-      method.setJavadoc(methodDoc.commentText());
+      method.setJavadoc(DocletUtils.preserveJavadocFormatting(methodDoc
+         .commentText()));
       LOG.debug(method.getJavadoc());
       if (method.getJavadoc().contains("@inheritDoc")) {
          // Look in parent class for javadoc
@@ -152,12 +146,14 @@ public class MethodBuilder {
          for (MethodDoc md : superClass.methods()) {
             if (md.name().equalsIgnoreCase(methodDoc.name())
                && md.signature().equalsIgnoreCase(methodDoc.signature())) {
-               method.setJavadoc(md.commentText());
+               method.setJavadoc(DocletUtils.preserveJavadocFormatting(md
+                  .commentText()));
+               LOG.debug("Using base class doc + " + method.getJavadoc());
                return;
             }
          }
       }
-      LOG.debug(method.getJavadoc());
+
       if (method.getJavadoc().contains("@inheritDoc")) {
          // Look in interfaces for javadoc
          ClassDoc containingClass = methodDoc.containingClass();
@@ -165,7 +161,9 @@ public class MethodBuilder {
             for (MethodDoc md : cd.methods()) {
                if (md.name().equalsIgnoreCase(methodDoc.name())
                   && md.signature().equalsIgnoreCase(methodDoc.signature())) {
-                  method.setJavadoc(md.commentText());
+                  method.setJavadoc(DocletUtils.preserveJavadocFormatting(md
+                     .commentText()));
+                  LOG.debug("Using interface doc + " + method.getJavadoc());
                   return;
                }
             }
@@ -319,15 +317,16 @@ public class MethodBuilder {
       if (methodDoc.returnType() != null) {
          responseParams.add(new ResponseParameter(DocTypeUtils
             .getTypeName(methodDoc.returnType()), DocTypeUtils
-            .getTypeName(methodDoc.returnType()), DocTypeUtils
-            .getReturnDoc(methodDoc)));
+            .getTypeName(methodDoc.returnType()), DocletUtils
+            .preserveJavadocFormatting(DocTypeUtils.getReturnDoc(methodDoc))));
       }
       // Add any checked exceptions
       for (ClassDoc exceptionDoc : methodDoc.thrownExceptions()) {
          responseParams.add(new ResponseParameter(DocTypeUtils
             .getTypeName(exceptionDoc),
-            DocTypeUtils.getTypeName(exceptionDoc), DocTypeUtils
-            .getTypeDoc(exceptionDoc)));
+            DocTypeUtils.getTypeName(exceptionDoc), DocletUtils
+            .preserveJavadocFormatting(DocTypeUtils
+               .getTypeDoc(exceptionDoc))));
       }
       method.setResponseParams(responseParams);
 
