@@ -37,8 +37,8 @@ public class RequestParameterBuilder extends BaseTypeBuilder {
                                  final ParamTag[] tags) {
       super.build(type, param, tags);
       initName(type, param);
-      initRequired(type, param, tags);
-      initDefaultValue(type, param, tags);
+      initRequired(type, param);
+      initDefaultValue(type, param);
       type.assertValid();
       return type;
    }
@@ -69,8 +69,7 @@ public class RequestParameterBuilder extends BaseTypeBuilder {
     * @param tags the Java documentation tags of the parameters of the method
     *           this parameter belongs to.
     */
-   private void initRequired(RequestParameter type, final Parameter param,
-                             final ParamTag[] tags) {
+   private void initRequired(RequestParameter type, final Parameter param) {
       final AnnotationValue value =
          elementValue(param, RequestParam.class, "required");
       if (value != null) {
@@ -86,8 +85,7 @@ public class RequestParameterBuilder extends BaseTypeBuilder {
     * @param tags the Java documentation tags of the parameters of the method
     *           this parameter belongs to.
     */
-   private void initDefaultValue(RequestParameter type, final Parameter param,
-                                 final ParamTag[] tags) {
+   private void initDefaultValue(RequestParameter type, final Parameter param) {
       final AnnotationValue value =
          elementValue(param, RequestParam.class, "defaultValue");
       if (value != null) {
