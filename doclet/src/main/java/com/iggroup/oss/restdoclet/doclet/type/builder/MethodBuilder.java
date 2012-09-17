@@ -71,13 +71,15 @@ public class MethodBuilder {
       assert methodDoc != null;
 
       LOG.info("Initialising method: " + methodDoc);
+      MethodDoc md = DocletUtils.findMethodDocumentation(methodDoc);
+
       initName(method, methodDoc);
       initRequestMethod(method, methodDoc);
-      initJavadoc(method, methodDoc);
-      initRequestParams(method, methodDoc.parameters(), methodDoc.paramTags());
-      initPathParams(method, methodDoc.parameters(), methodDoc.paramTags());
-      initModelParams(method, methodDoc.parameters(), methodDoc.paramTags());
-      initBodyParams(method, methodDoc.parameters(), methodDoc.paramTags());
+      initJavadoc(method, md);
+      initRequestParams(method, methodDoc.parameters(), md.paramTags());
+      initPathParams(method, methodDoc.parameters(), md.paramTags());
+      initModelParams(method, methodDoc.parameters(), md.paramTags());
+      initBodyParams(method, methodDoc.parameters(), md.paramTags());
       initRestParams(method, methodDoc, baseUri);
       initResponseParams(method, methodDoc);
 
@@ -138,37 +140,7 @@ public class MethodBuilder {
 
       method.setJavadoc(DocletUtils.preserveJavadocFormatting(methodDoc
          .commentText()));
-      LOG.debug(method.getJavadoc());
-      if (method.getJavadoc().contains("@inheritDoc")) {
-         // Look in parent class for javadoc
-         ClassDoc containingClass = methodDoc.containingClass();
-         ClassDoc superClass = containingClass.superclass().asClassDoc();
-         for (MethodDoc md : superClass.methods()) {
-            if (md.name().equalsIgnoreCase(methodDoc.name())
-               && md.signature().equalsIgnoreCase(methodDoc.signature())) {
-               method.setJavadoc(DocletUtils.preserveJavadocFormatting(md
-                  .commentText()));
-               LOG.debug("Using base class doc + " + method.getJavadoc());
-               return;
-            }
-         }
-      }
 
-      if (method.getJavadoc().contains("@inheritDoc")) {
-         // Look in interfaces for javadoc
-         ClassDoc containingClass = methodDoc.containingClass();
-         for (ClassDoc cd : containingClass.interfaces()) {
-            for (MethodDoc md : cd.methods()) {
-               if (md.name().equalsIgnoreCase(methodDoc.name())
-                  && md.signature().equalsIgnoreCase(methodDoc.signature())) {
-                  method.setJavadoc(DocletUtils.preserveJavadocFormatting(md
-                     .commentText()));
-                  LOG.debug("Using interface doc + " + method.getJavadoc());
-                  return;
-               }
-            }
-         }
-      }
    }
 
    /**
