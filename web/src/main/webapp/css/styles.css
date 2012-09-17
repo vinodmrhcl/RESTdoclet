@@ -133,6 +133,21 @@ div.services td.uri {
    margin-left:10px;
 }
 
+td.javadoc ul  {
+   list-style-type: circle;
+   margin-left: 20px;
+   }
+
+td.javadoc ol  {
+   list-style-type: circle;
+   margin-left: 20px;
+   }
+   
+span.javadoc {
+   white-space:pre-wrap;
+}
+
+   
 td, th {
    padding: 3px;
 }
