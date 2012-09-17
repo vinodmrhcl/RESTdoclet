@@ -240,4 +240,33 @@ public final class DocletUtils {
       return "<span class=\"javadoc\">" + javadoc + "</span>";
 
    }
+
+   public static MethodDoc findMethodDocumentation(final MethodDoc methodDoc) {
+
+      // Look in parent class for javadoc
+      if (methodDoc.commentText().contains("@inheritDoc")) {
+
+         ClassDoc containingClass = methodDoc.containingClass();
+         ClassDoc superClass = containingClass.superclass().asClassDoc();
+         for (MethodDoc md : superClass.methods()) {
+            if (md.name().equalsIgnoreCase(methodDoc.name())
+               && md.signature().equalsIgnoreCase(methodDoc.signature())) {
+
+               return md;
+            }
+         }
+
+         // Look in interfaces for javadoc
+         for (ClassDoc cd : containingClass.interfaces()) {
+            for (MethodDoc md : cd.methods()) {
+               if (md.name().equalsIgnoreCase(methodDoc.name())
+                  && md.signature().equalsIgnoreCase(methodDoc.signature())) {
+
+                  return md;
+               }
+            }
+         }
+      }
+      return methodDoc;
+   }
 }
