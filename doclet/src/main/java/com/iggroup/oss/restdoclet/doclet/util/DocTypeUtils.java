@@ -14,6 +14,7 @@ import static com.iggroup.oss.restdoclet.doclet.util.UrlUtils.parseMultiUri;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -131,9 +132,14 @@ public final class DocTypeUtils {
 
       assert type.asClassDoc() != null;
 
-      return type != null && type.asClassDoc() != null
+      Boolean relevant =
+         type != null && type.asClassDoc() != null
          && type.asClassDoc().qualifiedTypeName().indexOf("java") != 0
          || isParameterisedType(type);
+
+      LOG.debug(type + " relevance is " + relevant);
+      return relevant;
+
    }
 
    /**
@@ -295,128 +301,156 @@ public final class DocTypeUtils {
     * @return
     */
    private static String getTypeDoc(final Type type,
-                                    ArrayList<String> processedTypes,
+                                    HashMap<String, String> processedTypes,
                                     Boolean leafType) {
 
-      LOG.debug("getTypeDoc " + type + " leafType=" + leafType);
+      LOG.info("getTypeDoc " + type + " leafType=" + leafType);
 
-      ClassDoc typeDoc = type.asClassDoc();
       String typeInfo = "";
 
-      if (typeDoc != null) {
+      if (isRelevantType(type)) {
 
-         // if this is a generic type then recurse with the first type argument
-         if (isParameterisedType(type)) {
-
-            typeInfo = getParameterisedTypeDoc(type);
-
-         } else if (isRelevantType(type)) {
-
-            logType(type);
-
-            processedTypes.add(type.typeName());
-
-            if (leafType && !typeDoc.commentText().isEmpty()) {
-               typeInfo += typeDoc.commentText();
-            }
-
-            if (typeDoc.isEnum()) {
-
-               typeInfo += getEnumDoc(type);
-
-            } else { // class
-
-               LOG.debug("class type");
-
-               // first do base class
-               if (typeDoc.superclass() != null) {
-
-                  LOG.debug("base type = "
-                     + typeDoc.superclass().qualifiedName());
-
-                  String baseTypeDoc =
-                     getTypeDoc(type.asClassDoc().superclassType(),
-                        processedTypes, false);
-                  if (!baseTypeDoc.isEmpty()) {
-                     typeInfo += "<tr><td>" + baseTypeDoc + "</td></tr>";
-                  }
-               }
-
-               typeInfo += getPublicConstantDoc(type);
-
-               Collection<String> getterNames = getGetterNames(type);
-
-               for (MethodDoc method : typeDoc.methods()) {
-
-                  if (method.isPublic() && getterNames.contains(method.name())) {
-
-                     String attributeInfo = "";
-                     String attributeType =
-                        method.returnType().simpleTypeName();
-
-                     // check if is this a parameterised type
-                     ParameterizedType pt =
-                        method.returnType().asParameterizedType();
-                     Type nestedType = null;
-                     if (pt != null && pt.typeArguments().length > 0) {
-
-                        attributeType += "[";
-                        for (int i = 0; i < pt.typeArguments().length; i++) {
-                           attributeType +=
-                              pt.typeArguments()[i].simpleTypeName();
-                           if (i < pt.typeArguments().length - 1) {
-                              attributeType += ", ";
-                           }
-                        }
-                        attributeType += "]";
-
-                     }
-
-                     // Check if this is an array
-                     attributeType += method.returnType().dimension();
-
-                     final String attributeName =
-                        getAttributeNameFromMethod(method.name());
-
-                     attributeInfo +=
-                        "<td>" + attributeType + " " + attributeName + "</td>";
-
-                     // If type or parameterised type then recurse
-                     if (!processedTypes.contains(method.returnType()
-                        .qualifiedTypeName())
-                        && isRelevantType(method.returnType())) {
-                        attributeInfo +=
-                           "<td>"
-                              + getTypeDoc(
-                                 nestedType == null ? method.returnType()
-                                    : nestedType, processedTypes, true)
-                                    + "</td>";
-
-                     } else {
-
-                        attributeInfo +=
-                           "<td>"
-                              + getFieldDoc(type, attributeName,
-                                 method.commentText()) + "</td>";
-
-                     }
-
-                     if (!attributeInfo.isEmpty()) {
-                        typeInfo += "<tr>" + attributeInfo + "</tr>";
-                     }
-
-                  }
-               }
-            }
-
-            // Wrap in a table tag if this is concrete type
-            if (leafType && !typeInfo.isEmpty()) {
-               typeInfo = "<table>" + typeInfo + "</table>";
-            }
+         ClassDoc typeDoc = type.asClassDoc();
+         typeInfo = processedTypes.get(type.typeName());
+         if (typeInfo != null) {
+            LOG.debug("Found cached typedoc for " + type.typeName() + " - "
+               + typeInfo);
          }
+         if (typeInfo == null && typeDoc != null) {
+
+            typeInfo = "";
+
+            // if this is a generic type then recurse with the first type argument
+            if (isParameterisedType(type)) {
+
+               LOG.debug("Parameterised type");
+               typeInfo = getParameterisedTypeDoc(type);
+
+            } else {
+
+               logType(type);
+
+               // put placeholder to stop recursion for self-referential types
+               processedTypes.put(type.typeName(), "");
+
+               LOG.debug("SSS " + typeDoc.commentText() + "  " + leafType);
+               if (leafType && !typeDoc.commentText().isEmpty()) {
+                  typeInfo +=
+                     "<tr><span class=\"javadoc-header\">"
+                        + typeDoc.commentText() + "</span></tr>";
+                  LOG.debug("TTT " + typeInfo);
+               }
+
+               if (typeDoc.isEnum()) {
+
+                  LOG.debug( "Enum type");
+                  typeInfo += getEnumDoc(type);
+
+               } else { // class
+
+                  LOG.debug("Class");
+                  // first do base class
+                  if (typeDoc.superclass() != null) {
+
+                     LOG.debug("base type = "
+                        + typeDoc.superclass().qualifiedName());
+
+                     String baseTypeDoc =
+                        getTypeDoc(type.asClassDoc().superclassType(),
+                           processedTypes, false);
+                     if (!baseTypeDoc.isEmpty()) {
+                        LOG.debug("base type DOC = " + baseTypeDoc);
+                        typeInfo += baseTypeDoc;
+                     }
+                  }
+
+                  typeInfo += getPublicConstantDoc(type);
+
+                  Collection<String> getterNames = getGetterNames(type);
+
+                  for (MethodDoc method : typeDoc.methods()) {
+
+                     if (method.isPublic()
+                        && getterNames.contains(method.name())) {
+
+                        String attributeInfo = "";
+                        String attributeType =
+                           method.returnType().simpleTypeName();
+
+                        // check if is this a parameterised type
+                        ParameterizedType pt =
+                           method.returnType().asParameterizedType();
+                        if (pt != null && pt.typeArguments().length > 0) {
+
+                           attributeType += "[";
+                           for (int i = 0; i < pt.typeArguments().length; i++) {
+                              attributeType +=
+                                 pt.typeArguments()[i].simpleTypeName();
+                              if (i < pt.typeArguments().length - 1) {
+                                 attributeType += ", ";
+                              }
+                           }
+                           attributeType += "]";
+
+                        }
+
+                        // Check if this is an array
+                        attributeType += method.returnType().dimension();
+
+                        final String attributeName =
+                           getAttributeNameFromMethod(method.name());
+
+                        attributeInfo +=
+                           "<td>" + attributeType + " " + attributeName
+                           + "</td>";
+
+                        // If type or parameterised type then recurse
+                        LOG.debug("Generating attribute doc for "
+                           + method.returnType());
+                        String attributeTypeDoc =
+                           getTypeDoc(method.returnType(), processedTypes,
+                              true);
+                        if (!attributeTypeDoc.isEmpty()) {
+                           LOG.debug("Found attribute doc for "
+                              + method.returnType());
+                           attributeInfo +=
+                              "<td>" + attributeTypeDoc + "</td>";
+
+                        } else { // no useful type information, so use whatever's on the attribute doc
+                           LOG.debug("Found no attribute doc for "
+                              + method.returnType());
+
+                           String fieldDoc =
+                              getFieldDoc(type, attributeName,
+                                 method.commentText());
+                           attributeInfo += "<td>" + fieldDoc + "</td>";
+
+                        }
+
+                        if (!attributeInfo.isEmpty()) {
+                           typeInfo += "<tr>" + attributeInfo + "</tr>";
+                        }
+
+                     }
+                  }
+               }
+
+               // Wrap in a table tag if this is concrete type
+               if (leafType && !typeInfo.isEmpty()) {
+                  typeInfo = "<table>" + typeInfo + "</table>";
+               }
+            }
+
+         }
+
+         processedTypes.put(type.typeName(), typeInfo);
 
       }
 
+      if (typeInfo == null) {
+         typeInfo = "";
+      }
+      LOG.debug("XXX " + type.typeName() + " XXX " + typeInfo);
       return typeInfo;
 
    }
@@ -430,7 +464,7 @@ public final class DocTypeUtils {
     * @return attribute data for the given type
     */
    public static String getTypeDoc(final Type type) {
-      ArrayList<String> documentedTypes = new ArrayList<String>();
+      HashMap<String, String> documentedTypes = new HashMap<String, String>();
       String typeDoc = getTypeDoc(type, documentedTypes, true);
       if (typeDoc != null && !typeDoc.trim().isEmpty()) {
          LOG.info("Got documentation for type " + type + " : " + typeDoc);
