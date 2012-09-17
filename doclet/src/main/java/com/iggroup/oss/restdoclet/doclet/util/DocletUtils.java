@@ -1,21 +1,12 @@
 /*
- * #%L
- * restdoc-doclet
- * %%
- * Copyright (C) 2012 IG Group
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * #%L restdoc-doclet %% Copyright (C) 2012 IG Group %% Licensed under the
+ * Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License
+ * at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 package com.iggroup.oss.restdoclet.doclet.util;
 
@@ -47,7 +38,8 @@ public final class DocletUtils {
     * The name of the file that contains the properties. This file is packaged
     * with <code>doclet</code>'s archive.
     */
-   public static final String PROPERTIES_FILE = "oss-restdoclet-doclet.properties";
+   public static final String PROPERTIES_FILE =
+      "oss-restdoclet-doclet.properties";
 
    private static final String GETTER_PREFIX = "get";
 
@@ -202,8 +194,7 @@ public final class DocletUtils {
             || debugLevel.equalsIgnoreCase("info") || debugLevel
             .equalsIgnoreCase("error"))) {
 
-         System.out
-         .println("Setting RESTDoclet logging level to : "
+         System.out.println("Setting RESTDoclet logging level to : "
             + debugLevel);
 
          try {
@@ -230,5 +221,23 @@ public final class DocletUtils {
          }
 
       }
+   }
+
+   /**
+    * Preserve the formatting of the javadoc string
+    * 
+    * @param javadoc
+    * @return javadoc string wrapped with span element of type javadoc
+    */
+   public static String preserveJavadocFormatting(final String javadoc) {
+
+      if (javadoc.contains("<span class=\"javadoc\">")) {
+
+         return javadoc;
+
+      }
+
+      return "<span class=\"javadoc\">" + javadoc + "</span>";
+
    }
 }
