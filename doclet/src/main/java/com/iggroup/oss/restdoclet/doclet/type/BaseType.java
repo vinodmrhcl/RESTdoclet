@@ -20,6 +20,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 
 import com.iggroup.oss.restdoclet.doclet.util.DocTypeUtils;
+import com.iggroup.oss.restdoclet.doclet.util.DocletUtils;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Parameter;
@@ -161,8 +162,8 @@ public abstract class BaseType implements Comparable<BaseType> {
       for (ParamTag tag : tags) {
          if (param.name().equals(tag.parameterName())) {
             String comment = DocTypeUtils.getTypeDoc(param.type());
-            setJavadoc(comment == null || comment.isEmpty() ? tag
-               .parameterComment() : comment);
+            setJavadoc(DocletUtils.preserveJavadocFormatting(comment == null
+               || comment.isEmpty() ? tag.parameterComment() : comment));
          }
       }
    }
