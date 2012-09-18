@@ -10,9 +10,6 @@
  */
 package com.iggroup.oss.sample.web.controller;
 
-import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -42,203 +39,139 @@ import com.iggroup.oss.sample.service.SampleService;
 @Controller("sampleController")
 public class SampleController extends BaseController {
 
-   private static final Logger LOGGER = Logger
-      .getLogger(SampleController.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(SampleController.class);
 
-   @Autowired
-   private SampleService service;
+	@Autowired
+	private SampleService service;
 
-   /**
-    * Find sample by unique lookup reference
-    * 
-    * @param reference the sample reference, a 5 digit text field
-    * @return the sample object corresponding to the lookup reference
-    */
-   @RequestMapping(value = "/samples/{reference}", method = {RequestMethod.GET})
-   @ResponseBody
-   public Sample getSampleByReference(/*
-    * @Valid @Pattern(regexp=
-    * "[0-9][0-9][0-9][0-9][0-9]")
-    */@PathVariable String reference) {
+	/**
+	 * Find sample by unique lookup reference
+	 * 
+	 * @param reference the sample reference, a 5 digit text field
+	 * @return the sample object corresponding to the lookup reference
+	 */
+	@RequestMapping(value = "/samples/{reference}", method = {RequestMethod.GET})
+	@ResponseBody
+	public Sample getSampleByReference(/*
+	 * @Valid @Pattern(regexp=
+	 * "[0-9][0-9][0-9][0-9][0-9]")
+	 */@PathVariable String reference) {
 
-      LOGGER.info("getSampleByReference " + reference);
+		LOGGER.info("getSampleByReference " + reference);
 
-      // since @Valid doesn't work properly until Spring 3.1
-      // Note: could use SampleReference as a RequestParam but then the
-      // interface is a little clunky
-      validate(new SampleReference(reference));
+		// since @Valid doesn't work properly until Spring 3.1
+		// Note: could use SampleReference as a RequestParam but then the
+		// interface is a little clunky
+		validate(new SampleReference(reference));
 
-      return service.getSampleByReference(reference);
+		return service.getSampleByReference(reference);
 
-   }
+	}
 
-   /**
-    * Find all samples
-    * 
-    * @return all sample objects
-    */
-   @RequestMapping(value = "/samples", method = {RequestMethod.GET})
-   @ResponseBody
-   public SampleList findAllSamples() {
+	/**
+	 * Find all samples
+	 * 
+	 * @return all sample objects
+	 */
+	@RequestMapping(value = "/samples", method = {RequestMethod.GET})
+	@ResponseBody
+	public SampleList findAllSamples() {
 
-      LOGGER.info("getSamples ");
+		LOGGER.info("getSamples ");
 
-      return new SampleList(service.findAllSamples());
+		return new SampleList(service.findAllSamples());
 
-   }
+	}
 
-   /**
-    * Find samples matching name
-    * 
-    * @param name the sample name fragment to search by
-    * @return the sample objects matching the requested name
-    */
-   @RequestMapping(value = "/samples", params = "name", method = {RequestMethod.GET})
-   @ResponseBody
-   public SampleList findSamplesByName(@RequestParam String name) {
+	/**
+	 * Find samples matching name
+	 * 
+	 * @param name the sample name fragment to search by
+	 * @return the sample objects matching the requested name
+	 */
+	@RequestMapping(value = "/samples", params = "name", method = {RequestMethod.GET})
+	@ResponseBody
+	public SampleList findSamplesByName(@RequestParam String name) {
 
-      LOGGER.info("getSamplesByName " + name);
+		LOGGER.info("getSamplesByName " + name);
 
-      return new SampleList(service.findSamplesByName(name));
+		return new SampleList(service.findSamplesByName(name));
 
-   }
+	}
 
-   /**
-    * Find samples matching type
-    * 
-    * @param type the sample type to search by
-    * @return the sample objects matching the requested type
-    */
-   @RequestMapping(value = "/samples", params = "type", method = {RequestMethod.GET})
-   @ResponseBody
-   public SampleList findSamplesByType(@RequestParam SampleType type) {
+	/**
+	 * Find samples matching type
+	 * 
+	 * @param type the sample type to search by
+	 * @return the sample objects matching the requested type
+	 */
+	@RequestMapping(value = "/samples", params = "type", method = {RequestMethod.GET})
+	@ResponseBody
+	public SampleList findSamplesByType(@RequestParam SampleType type) {
 
-      LOGGER.info("getSamplesByType " + type);
+		LOGGER.info("getSamplesByType " + type);
 
-      validate(type);
+		validate(type);
 
-      return new SampleList(service.findSamplesByType(type));
+		return new SampleList(service.findSamplesByType(type));
 
-   }
+	}
 
-   /**
-    * Delete the sample indicated by the reference
-    * 
-    * @param reference the sample's reference, a 5 digit text field
-    */
-   @RequestMapping(value = "/samples/{reference}", method = {RequestMethod.DELETE})
-   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-   public void deleteSample(@PathVariable String reference) {
+	/**
+	 * Delete the sample indicated by the reference
+	 * 
+	 * @param reference the sample's reference, a 5 digit text field
+	 */
+	@RequestMapping(value = "/samples/{reference}", method = {RequestMethod.DELETE})
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void deleteSample(@PathVariable String reference) {
 
-      LOGGER.info("deleteSample " + reference);
+		LOGGER.info("deleteSample " + reference);
 
-      validate(new SampleReference(reference));
+		validate(new SampleReference(reference));
 
-      service.deleteSample(reference);
+		service.deleteSample(reference);
 
-   }
+	}
 
-   /**
-    * Create a sample or return a list of validation errors
-    * 
-    * @param sample the sample to be created
-    * @param response http response
-    */
-   @RequestMapping(value = "/samples", method = {RequestMethod.POST})
-   @ResponseStatus(value = HttpStatus.CREATED)
-   public void createSample(@RequestBody Sample sample,
-                            HttpServletResponse response) {
+	/**
+	 * Create a sample or return a list of validation errors
+	 * 
+	 * @param sample the sample to be created
+	 * @param response http response
+	 */
+	@RequestMapping(value = "/samples", method = {RequestMethod.POST})
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public void createSample(@RequestBody Sample sample,
+			HttpServletResponse response) {
 
-      LOGGER.info("createSample " + sample.getReference());
+		LOGGER.info("createSample " + sample.getReference());
 
-      validate(sample);
+		validate(sample);
 
-      service.createSample(sample);
+		service.createSample(sample);
 
-      response.setHeader("Location", "/samples/" + sample.getReference());
+		response.setHeader("Location", "/samples/" + sample.getReference());
 
-   }
+	}
 
-   /**
-    * Update a sample or return a list of validation errors
-    * 
-    * @param sample fully populated sample object
-    */
-   @RequestMapping(value = "/samples", method = {RequestMethod.PUT})
-   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-   public void updateSample(@Valid @RequestBody Sample sample) {
+	/**
+	 * Update a sample or return a list of validation errors
+	 * 
+	 * @param sample fully populated sample object
+	 */
+	@RequestMapping(value = "/samples", method = {RequestMethod.PUT})
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void updateSample(@Valid @RequestBody Sample sample) {
 
-      LOGGER.info("updateSample " + sample.getReference());
+		LOGGER.info("updateSample " + sample.getReference());
 
-      validate(sample);
+		validate(sample);
 
-      service.updateSample(sample);
+		service.updateSample(sample);
 
-   }
+	}
 
-   /**
-    * Test hashMap
-    * <ul>
-    * <li><code>X-IG-CLIENT_FLAVOUR</code> - for example <i>CFD</i>. Note this
-    * is provided in upper case whereas other references to the client
-    * application are in lower case.
-    * <li><code>X-IG-CLIENT_VERSION</code> - for example <i>1.24.41</i>
-    * <li><code>X-IG-DEVICE_OS_NAME</code> - for example <i>Blackberry_OS</i>
-    * <li><code>X-IG-DEVICE_OS_VERSION</code> - for example <i>4.6.0.92</i>
-    * <li><code>X-IG-DEVICE_MANUFACTURER</code> - for example <i>Research In
-    * Motion</i>
-    * <li><code>X-IG-DEVICE_MODEL</code> - for example <i>9000</i>
-    * <li><code>X-IG-DEVICE_LOCALE</code> - for example <i>en-GB</i>
-    * <li><code>X-IG-DEVICE_CARRIER</code> - for example <i>Default 3G
-    * Network</i>
-    * </ul>
-    * 
-    * @return test hashmap
-    * @uriDeprecated {"/deprecated"}
-    */
-   @RequestMapping(value = {"/map", "/deprecated"}, method = {RequestMethod.GET})
-   @ResponseBody
-   public HashMap<String, Sample> getMap() {
-
-      LOGGER.info("getMap");
-
-      HashMap<String, Sample> sampleMap = new HashMap<String, Sample>();
-
-      SampleList samples = findAllSamples();
-
-      for (Sample sample : samples) {
-         sampleMap.put(sample.getReference(), sample);
-      }
-
-      return sampleMap;
-
-   }
-
-   /**
-    * returns the market data detail information for a given position, used to
-    * display an edit ticket screen
-    * 
-    * @param request the http request
-    * @param dealId the dealId of the position to look up#
-    * @return the full detailed ticket information set for the given working
-    *         order
-    * @throws Exception in case of any server error
-    * @uriDeprecated {"/markets/details/positions/{dealId}",
-    *                "/marketdata/otc/{dealId:^[^\\.]+$}",
-    *                "/markets/details/position/{dealId}"}
-    * @deprecated use MarketDataV2Controller.openPositionData instead. URI :
-    *             /v2/markets/details/positions/{dealId}
-    */
-   @Deprecated
-   @RequestMapping(value = {"/markets/details/positions/{dealId}",
-      "/markets/details/position/{dealId}",
-   "/marketdata/otc/{dealId:^[^\\.]+$}"}, method = {RequestMethod.GET})
-   @ResponseBody
-   @SuppressWarnings("unchecked")
-   public Sample openPositionData(HttpServletRequest request,
-                                  @PathVariable String dealId)
-                                     throws Exception {
-      return null;
-   }
 
 }
