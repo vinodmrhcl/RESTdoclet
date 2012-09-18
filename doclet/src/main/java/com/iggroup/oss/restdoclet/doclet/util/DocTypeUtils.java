@@ -333,12 +333,12 @@ public final class DocTypeUtils {
                // put placeholder to stop recursion for self-referential types
                processedTypes.put(type.typeName(), "");
 
-               LOG.debug("SSS " + typeDoc.commentText() + "  " + leafType);
+               LOG.debug(typeDoc.commentText() + "  " + leafType);
                if (leafType && !typeDoc.commentText().isEmpty()) {
                   typeInfo +=
                      "<tr><span class=\"javadoc-header\">"
                         + typeDoc.commentText() + "</span></tr>";
-                  LOG.debug("TTT " + typeInfo);
+                  LOG.debug(typeInfo);
                }
 
                if (typeDoc.isEnum()) {
