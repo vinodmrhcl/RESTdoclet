@@ -161,7 +161,7 @@ td {
 
 table.methods,
 table.methods td {
-   border:0;
+   border:1;
 }
 
 th {
@@ -177,11 +177,6 @@ td.requestMethod {
 
 table {
    width: 100%;
-}
-
-table table {
-   margin:10px auto 10px auto;
-   width:90%;
 }
 
 .method {
