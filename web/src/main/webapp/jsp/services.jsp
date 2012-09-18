@@ -71,7 +71,7 @@
                   <table class="methods">
                      <c:forEach var="method" items="${service.methods}">
                         <tr>
-                           <td class="requestMethod">${method.requestMethod}</td class="javadoc">
+                           <td class="requestMethod">${method.requestMethod}</td>
                            <td class="javadoc">${method.javadoc}</td>
                         </tr>
                      </c:forEach>
