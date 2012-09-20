@@ -190,7 +190,7 @@
 						<version>2.3.0-SNAPSHOT</version>
 						<configuration>
                             <deployUrl>http://localhost:8080/restdoclet/upload</deployUrl>
-                            <deployDir>${RESTDOCLET_DEPLOY}/${project.artifactId}</deployDir>
+                            <deployDir>${project.artifactId}</deployDir>
 							<excludes>
 								<exclude>none</exclude>
 							</excludes>

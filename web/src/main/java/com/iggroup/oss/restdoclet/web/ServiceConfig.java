@@ -44,6 +44,10 @@ public final class ServiceConfig {
 
    private static String configPath;
 
+   {
+      configPath = System.getenv("RESTDOCLET_DEPLOY");
+   }
+
    /**
     * Unused default constructor
     */

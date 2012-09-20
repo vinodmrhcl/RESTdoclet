@@ -36,6 +36,12 @@ public class FileUploadServlet extends HttpServlet {
     */
    private static final Logger LOG = Logger.getLogger(FileUploadServlet.class);
 
+   private static String configPath;
+
+   {
+      configPath = System.getenv("RESTDOCLET_DEPLOY");
+   }
+
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
     */
@@ -56,14 +62,15 @@ public class FileUploadServlet extends HttpServlet {
    public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-      String deployDir = request.getHeader(RESTDOCLET_DEPLOY);
+      String deploySubDir = request.getHeader(RESTDOCLET_DEPLOY);
+      String deployDir = configPath + File.separator + deploySubDir;
+
       LOG.info("Upload request to " + deployDir);
       if (ServletFileUpload.isMultipartContent(request))
-
       {
          try {
 
-            File dir = new File(deployDir);
+            File dir = new File(configPath);
             deleteDir(dir);
 
             List<FileItem> fileItems =
@@ -87,7 +94,7 @@ public class FileUploadServlet extends HttpServlet {
             }
 
          } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Failed to upload to " + configPath, e);
          }
 
       }
@@ -100,6 +107,8 @@ public class FileUploadServlet extends HttpServlet {
     * @return true if the operation succeeded, otherwise return false
     */
    private static boolean deleteDir(File dir) {
+
+      LOG.debug("Deleting " + dir);
       if (dir.isDirectory()) {
          String[] children = dir.list();
          for (int i = 0; i < children.length; i++) {
