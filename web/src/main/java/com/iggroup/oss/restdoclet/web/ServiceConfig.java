@@ -103,6 +103,8 @@ public final class ServiceConfig {
          LOGGER.error(configDir.getName() + " is not a directory");
       }
 
+      configDir = null;
+
       return serviceNames;
 
    }
@@ -164,6 +166,8 @@ public final class ServiceConfig {
          service.setContext(applicationName);
       }
 
+      servicesConfigFile = null;
+
       return services.getServices();
 
    }
@@ -191,6 +195,8 @@ public final class ServiceConfig {
          JiBXUtils.unmarshallService(new FileInputStream(serviceConfigFile));
 
       service.setContext(applicationName);
+
+      serviceConfigFile = null;
 
       return service;
 

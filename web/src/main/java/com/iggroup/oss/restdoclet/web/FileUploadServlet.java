@@ -44,6 +44,7 @@ public class FileUploadServlet extends HttpServlet {
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    * 
     */
    @Override
    public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -65,13 +66,13 @@ public class FileUploadServlet extends HttpServlet {
       String deploySubDir = request.getHeader(RESTDOCLET_DEPLOY);
       String deployDir = configPath + File.separator + deploySubDir;
 
-      LOG.info("Upload request to " + deployDir);
-      if (ServletFileUpload.isMultipartContent(request))
-      {
+      File dir = new File(deployDir);
+      deleteDir(dir);
+
+      if (ServletFileUpload.isMultipartContent(request)) {
          try {
 
-            File dir = new File(configPath);
-            deleteDir(dir);
+            LOG.info("Upload request to " + deployDir);
 
             List<FileItem> fileItems =
                new ServletFileUpload(new DiskFileItemFactory(1024 * 1024, dir))
@@ -108,19 +109,25 @@ public class FileUploadServlet extends HttpServlet {
     */
    private static boolean deleteDir(File dir) {
 
-      LOG.debug("Deleting " + dir);
-      if (dir.isDirectory()) {
-         String[] children = dir.list();
-         for (int i = 0; i < children.length; i++) {
-            boolean success = deleteDir(new File(dir, children[i]));
-            if (!success) {
-               return false;
+      if (dir.exists()) {
+
+         LOG.debug("Deleting " + dir);
+         if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+               boolean success = deleteDir(new File(dir, children[i]));
+               if (!success) {
+                  LOG.error("Failed to delete " + dir);
+                  return false;
+               }
             }
          }
+
+         return dir.delete();
+
       }
 
-      // The directory is now empty so delete it
-      return dir.delete();
+      return false;
    }
 
    /**
