@@ -103,26 +103,6 @@ public final class DocTypeUtils {
    }
 
    /**
-    * Get the documentation of a parameterised type
-    * 
-    * @param type
-    * @return
-    */
-   private static String getParameterisedTypeDoc(final Type type) {
-
-      String typeInfo = "";
-
-      if (type.asClassDoc() != null) {
-         LOG.debug(type.qualifiedTypeName());
-         typeInfo =
-            getTypeDoc(type.asParameterizedType().typeArguments()[type
-                                                                  .asParameterizedType().typeArguments().length - 1]);
-      }
-
-      return typeInfo;
-   }
-
-   /**
     * Return true if this is not a java type
     * 
     * @param type
@@ -324,13 +304,20 @@ public final class DocTypeUtils {
             if (isParameterisedType(type)) {
 
                LOG.debug("Parameterised type");
-               typeInfo = getParameterisedTypeDoc(type);
+               if (type.asClassDoc() != null) {
+                  typeInfo =
+                     getTypeDoc(
+                        type.asParameterizedType().typeArguments()[type
+                                                                   .asParameterizedType().typeArguments().length - 1],
+                                                                   processedTypes, true);
+               }
 
             } else {
 
                logType(type);
 
                // put placeholder to stop recursion for self-referential types
+               LOG.debug("Starting to cache: " + type.typeName());
                processedTypes.put(type.typeName(), "");
 
                LOG.debug(typeDoc.commentText() + "  " + leafType);
@@ -343,7 +330,7 @@ public final class DocTypeUtils {
 
                if (typeDoc.isEnum()) {
 
-                  LOG.debug( "Enum type");
+                  LOG.debug("Enum type");
                   typeInfo += getEnumDoc(type);
 
                } else { // class
@@ -443,6 +430,7 @@ public final class DocTypeUtils {
 
          }
 
+         LOG.debug("Caching: " + type.typeName());
          processedTypes.put(type.typeName(), typeInfo);
 
       }
