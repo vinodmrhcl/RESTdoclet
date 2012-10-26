@@ -1,3 +1,10 @@
+p{
+margin-top:16px;
+}
+code{
+font-family:monospace;
+}
+
 
 body {
    font-size: 16px;
@@ -134,13 +141,13 @@ div.services td.uri {
 }
 
 td.javadoc ul  {
-   list-style-type: circle;
-   margin-left: 20px;
+   list-style-type: disc;
+   margin-left: 16px;
    }
 
 td.javadoc ol  {
-   list-style-type: circle;
-   margin-left: 20px;
+   list-style-type: disc;
+   margin-left: 16px;
    }
    
 span.javadoc {

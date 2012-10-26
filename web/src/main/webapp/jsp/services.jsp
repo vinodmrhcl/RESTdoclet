@@ -59,7 +59,7 @@
 
                      <div class="${uri.deprecated? 'deprecated': 'active'}">
 
-                        <a href="service?APPLICATION=${param["APPLICATION"]}&SERVICE_ID=${service.identifier}">${uri.uri}</a>
+                        <a href="service?APPLICATION=${param["APPLICATION"]}&SERVICE_URI=${uri.uri}">${uri.uri}</a>
 
                         <c:if test="${uri.deprecated}">
                            <span class="deprecatedLabel">(deprecated)</span>

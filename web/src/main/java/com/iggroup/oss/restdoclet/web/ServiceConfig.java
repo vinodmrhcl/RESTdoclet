@@ -25,6 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jibx.runtime.JiBXException;
@@ -78,9 +80,9 @@ public final class ServiceConfig {
     * 
     * @return list of names
     */
-   public static Collection<String> getApplicationNames() {
+   public static List<String> getApplicationNames() {
 
-      Collection<String> serviceNames = new ArrayList<String>();
+      List<String> serviceNames = new ArrayList<String>();
 
       File configDir = new File(configPath);
 
@@ -104,6 +106,8 @@ public final class ServiceConfig {
       }
 
       configDir = null;
+
+      Collections.sort(serviceNames);
 
       return serviceNames;
 
@@ -185,6 +189,8 @@ public final class ServiceConfig {
                                     final String id)
                                        throws FileNotFoundException, JiBXException {
 
+      LOGGER.debug("getService " + applicationName + " - " + id);
+
       Service service;
 
       File serviceConfigFile =
@@ -201,6 +207,54 @@ public final class ServiceConfig {
       return service;
 
    }
+
+
+   /**
+    * Get a service by application name and service URI and operation name
+    * (GETP, PUT, POST,...)
+    * 
+    * @param applicationName
+    * @param id
+    * @return service
+    * @throws FileNotFoundException
+    * @throws JiBXException parsing error
+    */
+   public static Service getServiceByUri(final String applicationName,
+                                         final String uri)
+                                            throws FileNotFoundException, JiBXException {
+
+      LOGGER.debug("getServiceByUri " + configPath + " - " + applicationName
+         + " - "
+         + uri);
+      Services services;
+
+      File servicesConfigFile =
+         new File(configPath + File.separator + applicationName
+            + File.separator + "restdoc-services.xml");
+
+      services =
+         JiBXUtils.unmarshallServices(new FileInputStream(servicesConfigFile));
+
+      for (Service service : services.getServices()) {
+         LOGGER.debug(service.getContext() + " - " + service.getUris() + " - "
+            + service.getIdentifier());
+         for (Uri serviceUri : service.getUris()) {
+            LOGGER.debug(serviceUri);
+            if (serviceUri.getUri().equalsIgnoreCase(uri)) {
+               LOGGER.debug("match");
+               return getService(applicationName,
+                  Integer.toString(service.getIdentifier()));
+            }
+
+         }
+
+      }
+
+      return null;
+
+
+   }
+
 
    /**
     * Get an application's properties

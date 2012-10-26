@@ -1,7 +1,7 @@
 <%@ include file="includes.jsp" %>
 <html>
 <head>
-   <c:set var="service" value="<%= ServiceConfig.getService(request.getParameter(\"APPLICATION\"), request.getParameter(\"SERVICE_ID\")) %>"/>
+   <c:set var="service" value="<%= ServiceConfig.getServiceByUri(request.getParameter(\"APPLICATION\"), request.getParameter(\"SERVICE_URI\")) %>"/> 
    <c:set var="props"   value="<%= ServiceConfig.getProperties(request.getParameter(\"APPLICATION\")) %>"/>
 </head>
 
