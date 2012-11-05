@@ -40,7 +40,7 @@
 
       <p class="methodJsDoc">${method.javadoc}</p>
 
-      <c:if test="${!empty method.pathParams || !empty method.restParams || !empty method.requestParams}">
+      <c:if test="${!empty method.pathParams || !empty method.restParams || !empty method.requestParams || !empty method.bodyParams}">
 
          <div class="input">
             <h3>Request input</h3>
@@ -101,6 +101,20 @@
                      </td>
                   </tr>
                </c:forEach>
+
+               <c:forEach var="parameter" items="${method.bodyParams}">
+                  <tr>
+                     <td class="name">
+                           ${parameter.type} ${parameter.name}</td>
+                     <td class="javadoc">
+                           ${parameter.javadoc}</td>
+                     <td class="path">
+                        RequestBody
+                     </td>
+                  </tr>
+               </c:forEach>
+
+
                </tbody>
             </table>
          </div>
