@@ -87,17 +87,20 @@ public final class DocTypeUtils {
       String doc = "";
       Tag[] tags = element.tags();
 
-      doc = getTypeDoc(element.returnType());
-      if (doc.isEmpty()) { // no class doc found, revert to @return comment
+      String typeDoc = getTypeDoc(element.returnType());
+      //if (typeComment.isEmpty()) { // no class doc found, revert to @return comment
 
-         for (final Tag tag : tags) {
-            final String name = tag.name();
-            if (StringUtils.contains(name, RETURN_TAG)) {
-               doc = tag.text();
-               break;
+      for (final Tag tag : tags) {
+         final String name = tag.name();
+         if (StringUtils.contains(name, RETURN_TAG)) {
+            doc = tag.text();
+            if (!typeDoc.isEmpty()) {
+               doc += "<table><tr><td>" + typeDoc + "</td></tr></table>";
             }
+            break;
          }
       }
+      //}
       return doc;
 
    }
@@ -291,7 +294,7 @@ public final class DocTypeUtils {
       if (isRelevantType(type)) {
 
          ClassDoc typeDoc = type.asClassDoc();
-         typeInfo = processedTypes.get(type.typeName());
+         typeInfo = processedTypes.get(type.toString());
          if (typeInfo != null) {
             LOG.debug("Found cached typedoc for " + type.typeName() + " - "
                + typeInfo);
@@ -318,7 +321,7 @@ public final class DocTypeUtils {
 
                // put placeholder to stop recursion for self-referential types
                LOG.debug("Starting to cache: " + type.typeName());
-               processedTypes.put(type.typeName(), "");
+               processedTypes.put(type.toString(), "");
 
                LOG.debug(typeDoc.commentText() + "  " + leafType);
                if (leafType && !typeDoc.commentText().isEmpty()) {
@@ -430,8 +433,8 @@ public final class DocTypeUtils {
 
          }
 
-         LOG.debug("Caching: " + type.typeName());
-         processedTypes.put(type.typeName(), typeInfo);
+         LOG.debug("Caching: " + type);
+         processedTypes.put(type.toString(), typeInfo);
 
       }
 
