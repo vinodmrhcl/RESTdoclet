@@ -155,8 +155,7 @@ public class MethodBuilder {
       ArrayList<RequestParameter> requestParams =
          new ArrayList<RequestParameter>();
       for (Parameter param : params) {
-         if (isAnnotated(param, RequestParam.class)
-            || isAnnotated(param, RequestBody.class)) {
+         if (isAnnotated(param, RequestParam.class)) {
             requestParams.add(new RequestParameterBuilder().build(
                new RequestParameter(), param, tags));
          }
@@ -214,6 +213,7 @@ public class MethodBuilder {
       ArrayList<BodyParameter> bodyParams = new ArrayList<BodyParameter>();
       for (Parameter param : params) {
          if (isAnnotated(param, RequestBody.class)) {
+            LOG.debug("YYYYYYYYYYYYYYYYYY");
             bodyParams.add(new BodyParameterBuilder().build(
                new BodyParameter(), param, tags));
          }
