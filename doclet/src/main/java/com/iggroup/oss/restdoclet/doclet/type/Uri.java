@@ -74,6 +74,9 @@ public class Uri implements Comparable<Uri> {
    public Uri(final String uri, final boolean deprecated) {
       super();
       this.uri = trimToNull(uri);
+      if (this.uri == null || this.uri.isEmpty()) {
+         this.uri = "/";
+      }
       setDeprecated(deprecated);
    }
 
@@ -120,7 +123,7 @@ public class Uri implements Comparable<Uri> {
    public void assertValid() {
       assert uri != null;
       assert uri.length() > 0 && uri.contains("/") : "Invalid uri "
-         + this.toString();
+      + this.toString();
    }
 
    /**
@@ -133,7 +136,7 @@ public class Uri implements Comparable<Uri> {
          final Uri param = (Uri) obj;
          result =
             new EqualsBuilder().append(uri, param.uri)
-               .append(type, param.type).isEquals();
+            .append(type, param.type).isEquals();
       } else {
          result = false;
       }
@@ -159,7 +162,7 @@ public class Uri implements Comparable<Uri> {
       } else {
          result =
             new CompareToBuilder().append(uri, param.uri)
-               .append(type, param.type).toComparison();
+            .append(type, param.type).toComparison();
       }
       return result;
    }
@@ -170,7 +173,7 @@ public class Uri implements Comparable<Uri> {
    @Override
    public String toString() {
       return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-         .append("uri", uri).append("deprecated", deprecated).toString();
+      .append("uri", uri).append("deprecated", deprecated).toString();
    }
 
 }
