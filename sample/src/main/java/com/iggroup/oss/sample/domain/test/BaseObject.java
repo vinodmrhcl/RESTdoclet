@@ -12,7 +12,7 @@ public class BaseObject {
 
 	/**
 	 * get the foo
-	 * @return the foo
+	 * 
 	 */
 	public FooObject getBaseFoo() {
 		return baseFoo;
