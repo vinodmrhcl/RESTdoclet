@@ -125,9 +125,8 @@ public class RestDocumentationMojo extends AbstractMojo {
    private transient String scmUrl;
 
    /**
-    * The list of parameters that have to be excluded while matching URLs
-    * defined in <code>RESTURLTreeHandlerMapping</code> (or
-    * <code>RESTURLHandlerMapping</code>) and the methods in controllers.
+    * The list of parameters that have to be excluded while matching methods in
+    * controllers.
     * 
     * @parameter
     */
