@@ -383,6 +383,7 @@ public class RestDocumentationMojo extends AbstractMojo {
    private boolean excludeMethod(Method method) {
       for (String exclude : excludes) {
          if (method.getName().equalsIgnoreCase(exclude)) {
+            LOG.info("Excluding : " + method);
             return true;
          }
       }
