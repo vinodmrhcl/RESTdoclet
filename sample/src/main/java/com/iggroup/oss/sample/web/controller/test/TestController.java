@@ -16,6 +16,7 @@ import com.iggroup.oss.sample.domain.Sample;
 import com.iggroup.oss.sample.domain.test.BarList;
 import com.iggroup.oss.sample.domain.test.BarObject;
 import com.iggroup.oss.sample.domain.test.CompositeObject;
+import com.iggroup.oss.sample.domain.test.Ignore;
 
 /**
  * Test controller to allow more exotic controller behaviour to be validated
@@ -112,6 +113,20 @@ public class TestController implements TestInterface {
 	@RequestMapping(value = "/test/composite", method = { RequestMethod.GET })
 	@ResponseBody
 	public CompositeObject testComposite() {
+
+		return new CompositeObject();
+
+	}
+
+	/**
+	 * Test ignore annotation
+	 * 
+	 * @return an empty composite object
+	 */
+	@Ignore
+	@RequestMapping(value = "/test/THIS_SHOULD_NOT_BE_HERE", method = { RequestMethod.GET })
+	@ResponseBody
+	public CompositeObject testIgnore() {
 
 		return new CompositeObject();
 
