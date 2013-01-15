@@ -22,6 +22,7 @@ package com.iggroup.oss.restdoclet.doclet.util;
 import static com.iggroup.oss.restdoclet.doclet.util.UrlUtils.parseMultiUri;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.AnnotationDesc.ElementValuePair;
@@ -33,6 +34,14 @@ import com.sun.javadoc.ProgramElementDoc;
  * This is an utility class for processing annotations.
  */
 public final class AnnotationUtils {
+
+   private static final Logger LOG = Logger.getLogger(AnnotationUtils.class);
+
+   /**
+    * Configurable annotation to ignore attributes or methods
+    */
+   private final static String RESTDOCLET_IGNORE_ANNOTATION =
+      "RESTDOCLET_IGNORE_ANNOTATION";
 
    /**
     * Private constructor to "silence" PMD.
@@ -196,6 +205,33 @@ public final class AnnotationUtils {
       return result;
    }
 
+
+   /**
+    * Check if the element is annotated with the configured
+    * RESTDOCLET_IGNORE_ANNOTATION system property
+    * 
+    * @param element the element to check
+    * @return true if the element is annotated with the configured
+    *         RESTDOCLET_IGNORE_ANNOTATION property
+    */
+   public static boolean ignore(ProgramElementDoc element) {
+
+      LOG.debug(" IGNORE " + element.name());
+      String ignoreAnnotation =
+         System.getProperty(RESTDOCLET_IGNORE_ANNOTATION);
+
+      if (ignoreAnnotation != null && !ignoreAnnotation.isEmpty()) {
+         for (final AnnotationDesc annotation : annotations(element)) {
+            final String name = annotation.annotationType().qualifiedName();
+            LOG.debug(" ? " + name);
+            if (StringUtils.equals(ignoreAnnotation, name)) {
+               LOG.debug(" Ignoring : " + name);
+               return true;
+            }
+         }
+      }
+      return false;
+   }
 
    /**
     * Finds the annotation an element (class or method) is annotated with.

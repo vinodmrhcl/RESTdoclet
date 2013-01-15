@@ -10,6 +10,7 @@
  */
 package com.iggroup.oss.restdoclet.doclet.util;
 
+import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.ignore;
 import static com.iggroup.oss.restdoclet.doclet.util.UrlUtils.parseMultiUri;
 
 import java.util.ArrayList;
@@ -117,6 +118,7 @@ public final class DocTypeUtils {
 
       Boolean relevant =
          type != null && type.asClassDoc() != null
+         && !ignore(type.asClassDoc())
          && type.asClassDoc().qualifiedTypeName().indexOf("java") != 0
          || isParameterisedType(type);
 
@@ -361,7 +363,8 @@ public final class DocTypeUtils {
                   for (MethodDoc method : typeDoc.methods()) {
 
                      if (method.isPublic()
-                        && getterNames.contains(method.name())) {
+                        && getterNames.contains(method.name())
+                        && !ignore(method)) {
 
                         String attributeInfo = "";
                         String attributeType =

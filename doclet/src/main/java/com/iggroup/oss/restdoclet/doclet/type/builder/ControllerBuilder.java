@@ -20,6 +20,7 @@
 package com.iggroup.oss.restdoclet.doclet.type.builder;
 
 import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.elementValue;
+import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.ignore;
 import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.isAnnotated;
 import static com.iggroup.oss.restdoclet.doclet.util.AnnotationUtils.parseValueAnnotation;
 
@@ -101,7 +102,8 @@ public class ControllerBuilder extends BaseTypeBuilder {
       ArrayList<Method> methods = new ArrayList<Method>();
       for (int i = 0; classDoc.methods(false) != null
          && i < classDoc.methods(false).length; i++) {
-         if (isAnnotated(classDoc.methods(false)[i], RequestMapping.class)) {
+         if (isAnnotated(classDoc.methods(false)[i], RequestMapping.class)
+            && !ignore(classDoc.methods(false)[i])) {
             methods.add(new MethodBuilder().build(new Method(),
                classDoc.methods(false)[i], baseUri));
          }
