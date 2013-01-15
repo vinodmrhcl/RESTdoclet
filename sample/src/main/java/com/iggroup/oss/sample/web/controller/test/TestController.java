@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.iggroup.oss.sample.domain.Sample;
 import com.iggroup.oss.sample.domain.test.BarList;
 import com.iggroup.oss.sample.domain.test.BarObject;
+import com.iggroup.oss.sample.domain.test.CompositeObject;
 
 /**
  * Test controller to allow more exotic controller behaviour to be validated
@@ -101,6 +102,19 @@ public class TestController implements TestInterface {
 	public HashMap<String, Sample> testMap() {
 
 		return null;
+	}
+
+	/**
+	 * Test composite object
+	 * 
+	 * @return an empty composite object
+	 */
+	@RequestMapping(value = "/test/composite", method = { RequestMethod.GET })
+	@ResponseBody
+	public CompositeObject testComposite() {
+
+		return new CompositeObject();
+
 	}
 
 }
