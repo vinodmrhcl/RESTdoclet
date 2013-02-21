@@ -141,7 +141,7 @@ public class SampleController extends BaseController {
 	 * @param sample the sample to be created
 	 * @param response http response
 	 */
-	@RequestMapping(value = "/samples", method = {RequestMethod.POST})
+	@RequestMapping(value = "/samples", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void createSample(@RequestBody Sample sample,
 			HttpServletResponse response) {
