@@ -56,6 +56,11 @@ public class Method implements Comparable<Method> {
    private String produces;
 
    /**
+    * Required headers
+    */
+   private String headers;
+
+   /**
     * The URI of this method.
     */
    private Collection<Uri> uris = new ArrayList<Uri>();
@@ -325,6 +330,24 @@ public class Method implements Comparable<Method> {
     */
    public void setProduces(String produces) {
       this.produces = produces;
+   }
+
+   /**
+    * Get the required headers
+    * 
+    * @return the required headers
+    */
+   public String getHeaders() {
+      return headers;
+   }
+
+   /**
+    * Set the required headers
+    * 
+    * @param headers the required headers
+    */
+   public void setHeaders(String headers) {
+      this.headers = headers;
    }
 
    /**

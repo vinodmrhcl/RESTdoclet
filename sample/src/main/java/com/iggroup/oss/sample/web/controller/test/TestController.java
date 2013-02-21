@@ -137,7 +137,7 @@ public class TestController implements TestInterface {
 	}
 
 	@ResponseStatus(value = HttpStatus.CREATED)
-	@RequestMapping(value = "/test/headers", consumes = "application/json; charset=UTF-8", method = RequestMethod.POST, produces = "application/json", headers = "{SSO-TOKEN=X-SSO-TOKEN}")
+	@RequestMapping(value = "/test/headers", consumes = "application/json; charset=UTF-8", method = RequestMethod.POST, produces = "application/json", headers = "SSO-TOKEN=X-SSO-TOKEN")
 	@ResponseBody
 	public Sample testHeaders(@Valid @RequestBody Sample order,
 			HttpServletRequest request) {

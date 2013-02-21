@@ -41,9 +41,9 @@
       <p class="methodJsDoc">${method.javadoc}</p>
 
       <c:if test="${!empty method.pathParams || !empty method.restParams || !empty method.requestParams || !empty method.bodyParams}">
-
+       
          <div class="input">
-            <h3>Request input: ${method.consumes}</h3>
+            <h3>Request input: ${method.consumes} <c:if test="${!empty method.headers && !empty method.consumes}">; </c:if> ${method.headers}</h3>
             <table class="topLevel methodDetails">
                <thead>
                <tr>

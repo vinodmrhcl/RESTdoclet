@@ -77,6 +77,7 @@ public class MethodBuilder {
       initRequestMethod(method, methodDoc);
       initProduces(method, methodDoc);
       initConsumes(method, methodDoc);
+      initHeaders(method, methodDoc);
       initJavadoc(method, md);
       initRequestParams(method, methodDoc.parameters(), md.paramTags());
       initPathParams(method, methodDoc.parameters(), md.paramTags());
@@ -168,6 +169,18 @@ public class MethodBuilder {
       if (value != null) {
          method.setConsumes(value.toString().replace("\"", ""));
          LOG.debug("CONSUMES " + method.getConsumes());
+      }
+   }
+
+   private void initHeaders(Method method, final MethodDoc methodDoc) {
+      final AnnotationValue value =
+         elementValue(methodDoc, RequestMapping.class, "headers");
+
+      LOG.debug(method.getName());
+
+      if (value != null) {
+         method.setHeaders(value.toString().replace("\"", ""));
+         LOG.debug("HEADERS " + method.getHeaders());
       }
    }
 
