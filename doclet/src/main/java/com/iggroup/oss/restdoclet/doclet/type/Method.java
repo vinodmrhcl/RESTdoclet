@@ -1,21 +1,12 @@
 /*
- * #%L
- * restdoc-doclet
- * %%
- * Copyright (C) 2012 IG Group
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * #%L restdoc-doclet %% Copyright (C) 2012 IG Group %% Licensed under the
+ * Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License
+ * at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 package com.iggroup.oss.restdoclet.doclet.type;
 
@@ -53,6 +44,16 @@ public class Method implements Comparable<Method> {
     * The documentation of this method.
     */
    private String javadoc;
+
+   /**
+    * Input representaion
+    */
+   private String consumes;
+
+   /**
+    * Output representation
+    */
+   private String produces;
 
    /**
     * The URI of this method.
@@ -108,7 +109,6 @@ public class Method implements Comparable<Method> {
    public Method() {
       super();
    }
-
 
    /**
     * Gets the name of this method.
@@ -289,6 +289,42 @@ public class Method implements Comparable<Method> {
    public void setUris(final Collection<Uri> uris) {
 
       this.uris = uris;
+   }
+
+   /**
+    * Return the representation accepted by this method
+    * 
+    * @return the representation accepted by this method
+    */
+   public String getConsumes() {
+      return consumes;
+   }
+
+   /**
+    * Set the representation accepted by this method
+    * 
+    * @param consumes the representation accepted by this method
+    */
+   public void setConsumes(String consumes) {
+      this.consumes = consumes;
+   }
+
+   /**
+    * Return the representation produced by this method
+    * 
+    * @return the representation produced by this method
+    */
+   public String getProduces() {
+      return produces;
+   }
+
+   /**
+    * Set the representation produced by this method
+    * 
+    * @param produces the representation produced by this method
+    */
+   public void setProduces(String produces) {
+      this.produces = produces;
    }
 
    /**

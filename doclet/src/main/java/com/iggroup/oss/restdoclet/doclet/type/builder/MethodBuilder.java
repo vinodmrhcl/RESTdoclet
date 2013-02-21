@@ -75,6 +75,8 @@ public class MethodBuilder {
 
       initName(method, methodDoc);
       initRequestMethod(method, methodDoc);
+      initProduces(method, methodDoc);
+      initConsumes(method, methodDoc);
       initJavadoc(method, md);
       initRequestParams(method, methodDoc.parameters(), md.paramTags());
       initPathParams(method, methodDoc.parameters(), md.paramTags());
@@ -141,6 +143,32 @@ public class MethodBuilder {
       method.setJavadoc(DocletUtils.preserveJavadocFormatting(methodDoc
          .commentText()));
 
+   }
+
+   private void initProduces(Method method, final MethodDoc methodDoc) {
+
+      final AnnotationValue value =
+         elementValue(methodDoc, RequestMapping.class, "produces");
+
+      LOG.debug(method.getName());
+
+      if (value != null) {
+         method.setProduces(value.toString().replace("\"", ""));
+         LOG.debug("PRODUCES " + method.getProduces());
+      }
+
+   }
+
+   private void initConsumes(Method method, final MethodDoc methodDoc) {
+      final AnnotationValue value =
+         elementValue(methodDoc, RequestMapping.class, "consumes");
+
+      LOG.debug(method.getName());
+
+      if (value != null) {
+         method.setConsumes(value.toString().replace("\"", ""));
+         LOG.debug("CONSUMES " + method.getConsumes());
+      }
    }
 
    /**

@@ -24,6 +24,8 @@
 		<value name="name" field="name" />
 		<value name="request-method" field="requestMethod" />
 		<value name="javadoc" field="javadoc" usage="optional" />
+        <value name="consumes" field="consumes" usage="optional" />
+        <value name="produces" field="produces" usage="optional" />
 		<collection field="uris" item-type="com.iggroup.oss.restdoclet.doclet.type.Uri" create-type="java.util.ArrayList" />
 		<collection field="responseParams"
 			item-type="com.iggroup.oss.restdoclet.doclet.type.ResponseParameter" create-type="java.util.ArrayList" />

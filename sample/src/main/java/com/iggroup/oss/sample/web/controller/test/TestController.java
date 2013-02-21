@@ -3,14 +3,18 @@ package com.iggroup.oss.sample.web.controller.test;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.iggroup.oss.sample.domain.Sample;
 import com.iggroup.oss.sample.domain.test.BarList;
@@ -130,6 +134,14 @@ public class TestController implements TestInterface {
 
 		return new CompositeObject();
 
+	}
+
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@RequestMapping(value = "/test/headers", consumes = "application/json; charset=UTF-8", method = RequestMethod.POST, produces = "application/json", headers = "{SSO-TOKEN=X-SSO-TOKEN}")
+	@ResponseBody
+	public Sample testHeaders(@Valid @RequestBody Sample order,
+			HttpServletRequest request) {
+		return null;
 	}
 
 }

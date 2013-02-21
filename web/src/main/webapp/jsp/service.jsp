@@ -43,7 +43,7 @@
       <c:if test="${!empty method.pathParams || !empty method.restParams || !empty method.requestParams || !empty method.bodyParams}">
 
          <div class="input">
-            <h3>Request input</h3>
+            <h3>Request input: ${method.consumes}</h3>
             <table class="topLevel methodDetails">
                <thead>
                <tr>
@@ -122,7 +122,7 @@
       <c:if test="${!empty method.responseParams}">
 
          <div class="response">
-            <h3>Response contents</h3>
+            <h3>Response contents: ${method.produces}</h3>
             <table class="topLevel methodDetails">
                <thead>
                <tr>
